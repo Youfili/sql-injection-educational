@@ -6,6 +6,7 @@ CREATE TABLE Users (
     password TEXT NOT NULL,
     email TEXT NOT NULL,
     UNIQUE(username)
+    UNIQUE(email)
 );
 
 INSERT INTO Users (username, password, email) VALUES
