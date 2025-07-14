@@ -1,59 +1,55 @@
-'''
-Il Server Flask
-'''
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 import sqlite3  
 
 app = Flask(__name__)
+app.secret_key = 'supersecretkey'  # Necessaria per i messaggi flash
 
 @app.route('/')
 def index():
-    return render_template('index.html')   # ritorno il template e lo rendo visualizzabile 
-     
+    return render_template('index.html')  # eventualmente tua home page
 
 @app.route('/register', methods=('GET', 'POST'))
-def register(): 
-
+def register():
     if request.method == 'POST':
-        # metto i parametri passati in post con HTML dentro delle variabili locali
         username = request.form['username']
         passwd = request.form['password']
         em = request.form['email']
 
-        connection = sqlite3.connect('database.db')   # mi collego al database
-        cursor = connection.cursor()
+        try:
+            connection = sqlite3.connect('database.db')
+            cursor = connection.cursor()
 
-        # Query volutamente VULNERABILE a SQL Injection
-        query = f"INSERT INTO Users (username, password, email) VALUES ('{username}', '{passwd}', '{em}')"
-        cursor.execute(query)
+            # Query volutamente VULNERABILE per testare SQLi
+            query = f"INSERT INTO users (username, password, email) VALUES ('{username}', '{passwd}', '{em}')"
+            cursor.execute(query)
+            connection.commit()
 
-        '''
-        # Query Sicurezza Aumentata
-        query = f"INSERT INTO Users (username, password, email) VALUES (?,?,?)" 
-        cursor.execute(query, (username, passwd, em) )   # eseguo la query con parametri le variabili locali presi dalal request
-        '''
+            flash("✅ Utente inserito con successo!", "success")
 
-        connection.commit()
-        connection.close()
+        except sqlite3.IntegrityError as e:
+            if "username" in str(e).lower():
+                flash("❌ Username già in uso! Provane un altro :)", "danger")
+            elif "email" in str(e).lower():
+                flash("❌ Email già registrata! Prova con un'altra :)", "danger")
+            else:
+                flash("❌ Errore durante la registrazione.", "danger")
 
-        return redirect('/')
-    return render_template('/register.html')
+        finally:
+            connection.close()
 
+        return redirect('/register')
 
-# Voglio fare un'altra pagina in cui visualizzo tutti gli utenti registrati in questo momento
+    return render_template('register.html')
+
 @app.route('/utenti', methods=('GET',))
 def utenti():
     connection = sqlite3.connect('database.db')
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM Users")
-    users = cursor.fetchall()   # il risultato della query viene formattato in lista di ennuple
-
-    connection.close()      # chiudo la connessione
+    cursor.execute("SELECT * FROM users")
+    users = cursor.fetchall()
+    connection.close()
 
     return render_template('utenti.html', users=users)
-    
-
 
 if __name__ == '__main__':
     app.run(debug=True)
-
