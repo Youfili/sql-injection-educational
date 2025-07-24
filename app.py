@@ -6,12 +6,12 @@ app.secret_key = 'supersecretkey'  # Necessaria per i messaggi flash
 
 @app.route('/')
 def index():
-    return render_template('index.html')  # eventualmente tua home page
+    return render_template('index.html')  # home page
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        username = request.form['username']
+        username = request.form['username'] 
         passwd = request.form['password']
         em = request.form['email']
 
@@ -53,3 +53,6 @@ def utenti():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
