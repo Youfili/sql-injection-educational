@@ -1,36 +1,83 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Registrazione Utente{% endblock %}
+{% block title %}Registrazione - SQL Injection Demo{% endblock %}
 
 {% block content %}
-<div class="glass-card" style="max-width: 500px; margin: auto;">
-    <h1><i class="bi bi-person-circle"></i> Registrazione</h1>
-    <p class="note">Crea il tuo profilo per accedere al sistema</p>
+<div class="form-container">
+    <h2><i class="bi bi-person-plus"></i> Registrati</h2>
+    <form method="post" action="{{ url_for('register') }}">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-    <!-- MESSAGGI FLASH -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, msg in messages %}
-          <div class="alert alert-{{ category }} text-center" role="alert">
-            {{ msg }}
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+        <div class="mb-3">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username" required>
+        </div>
 
-    <!-- FORM -->
-    <form method="POST" style="width: 100%;">
-        <input type="text" name="username" id="username" class="form-control" placeholder="Username" value="{{ request.form.get('username', '') }}" required>
-        <input type="email" name="email" id="email" class="form-control" placeholder="Email" value="{{ request.form.get('email', '') }}" required>
-        <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="{{ request.form.get('password', '') }}" required>
-        
-        <button type="submit" class="btn-glow"><i class="bi bi-box-arrow-in-right"></i> Registra Utente</button>
+        <div class="mb-3">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" name="email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" name="password" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="confirm_password">Conferma Password</label>
+            <input type="password" class="form-control" name="confirm_password" required>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="gender">Sesso</label>
+            <select class="form-control" name="gender" required>
+                <option value="" disabled selected>-- Seleziona --</option>
+                <option value="Maschio">Maschio</option>
+                <option value="Femmina">Femmina</option>
+            </select>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="phone">Telefono (opzionale)</label>
+            <input type="text" class="form-control" name="phone">
+        </div>
+
+        <div class="mb-3">
+            <label for="birthdate">Data di nascita</label>
+            <input type="date" class="form-control" name="birthdate" required>
+        </div>
+
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" name="terms" id="terms" required>
+            <label class="form-check-label" for="terms">
+                Accetto i <a href="#">termini di servizio</a>
+            </label>
+        </div>
+
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="privacy" id="privacy" required>
+            <label class="form-check-label" for="privacy">
+                Accetto la <a href="#">privacy policy</a>
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Registrati</button>
     </form>
 
-    <div class="back" style="width: 100%; margin-top: 15px;">
+    <div class="back">
         <a href="/" style="color: #dfe6e9; text-decoration: none; display: block; text-align: center;">
             <i class="bi bi-arrow-left"></i> Torna alla Home
         </a>
     </div>
+    
 </div>
 {% endblock %}
+

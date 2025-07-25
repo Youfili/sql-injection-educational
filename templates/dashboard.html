@@ -3,19 +3,80 @@
 {% block title %}Dashboard - SQL Injection Demo{% endblock %}
 
 {% block content %}
-<div class="glass-card">
-    <h2><i class="bi bi-person-badge"></i> Benvenuto nella tua Dashboard, {{ user[1] }}</h2>
+<style>
+    .glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 20px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        padding: 40px;
+        color: #fff;
+        text-align: center;
+        max-width: 600px;
+        margin: 60px auto;
+    }
 
-    <div class="user-info mt-4 text-start" style="color: #2c3e50;">
-        <p><strong>Username:</strong> {{ user[1] }}</p>
-        <p><strong>Password:</strong> {{ user[2] }}</p>
-        <p><strong>Email:</strong> {{ user[3] }}</p>
+    .glass-card h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        color: #ecf0f1;
+    }
+
+    .user-info {
+        text-align: left;
+        line-height: 2rem;
+        font-size: 1.1rem;
+    }
+
+    .user-info p {
+        margin: 10px 0;
+        padding: 8px;
+        border-radius: 8px;
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .user-info strong {
+        color: #00e5ffe2;
+    }
+
+    .back a {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 10px 20px;
+        background-color: #0265f0;
+        color: white;
+        border-radius: 30px;
+        transition: background-color 0.3s ease;
+        text-decoration: none;
+    }
+
+    .back a:hover {
+        background-color: #1000bcbc;
+    }
+</style>
+
+<div class="glass-card">
+    <h2><i class="bi bi-person-badge-fill"></i> Benvenuto, {{ user[1] }}!</h2>
+
+    <div class="user-info">
+        <p><strong><i class="bi bi-person"></i> Username:</strong> {{ user[1] }}</p>
+        <p><strong><i class="bi bi-key"></i> Password:</strong> {{ user[2] }}</p>
+        <p><strong><i class="bi bi-envelope-at"></i> Email:</strong> {{ user[3] }}</p>
+        <p><strong><i class="bi bi-gender-ambiguous"></i> Sesso:</strong> {{ user[4] }}</p>
+        <p><strong><i class="bi bi-telephone"></i> Telefono:</strong> {{ user[5] if user[5] else '---' }}</p>
+        <p><strong><i class="bi bi-calendar-event"></i> Data di nascita:</strong> {{ user[6] }}</p>
+        <p><strong><i class="bi bi-file-earmark-check"></i> Termini di Servizio Accettati:</strong> {{ 'Sì ✅' if user[7] else 'No ❌' }}</p>
+        <p><strong><i class="bi bi-shield-lock"></i> Privacy Policy Accettata:</strong> {{ 'Sì ✅' if user[8] else 'No ❌' }}</p>
     </div>
 
-    <div class="back mt-4" style="text-align: center;">
-        <a href="{{ url_for('logout') }}" style="color: #dfe6e9; text-decoration: none; font-size: 1rem;">
+    <div class="back">
+        <a href="{{ url_for('logout') }}">
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </div>
 </div>
 {% endblock %}
+
