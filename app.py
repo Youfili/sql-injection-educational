@@ -24,6 +24,7 @@ def register():
             cursor.execute(query)
             connection.commit()
 
+            return redirect('/login')
             flash("✅ Utente inserito con successo!", "success")
 
         except sqlite3.IntegrityError as e:
@@ -122,7 +123,7 @@ def dashboard(username):
 @app.route('/logout')
 def logout():
     session.clear()     # libero la sessione attuale
-    flash("👋 Logout effettuato correttamente!", "info")
+    # flash("👋 Logout effettuato correttamente!", "info")
     return redirect('/')
 
 
