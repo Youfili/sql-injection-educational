@@ -161,6 +161,27 @@ def logout():
     return redirect('/')
 
 
+@app.route('/delete_account', methods=['POST'])
+def delete_account():
+    if 'user_id' not in session:        # un utente può elimare il suo account solo se loggato
+        flash("❌ Devi essere loggato per poter eliminare l'account.", "danger")
+        return redirect(url_for('login'))
+
+    user_id = session['user_id']        # assegno alla variabile il valore di 'user_id' nella sessione attuale
+
+    connection = sqlite3.connect('database.db')
+    cursor = connection.cursor()
+    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))    # elimino la ennupla dal database 
+    connection.commit()
+    connection.close()
+
+    # Dopo l'eliminazione, svuoto la sessione e rimando alla home
+    session.clear()
+    #flash("✅ Il tuo account è stato eliminato con successo.", "success")
+    return redirect(url_for('index'))
+
+
+
 @app.route('/utenti', methods=('GET',))
 def utenti():
     connection = sqlite3.connect('database.db')

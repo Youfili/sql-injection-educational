@@ -59,7 +59,7 @@
 </style>
 
 <div class="glass-card">
-    <h2><i class="bi bi-person-badge-fill"></i> Benvenuto, {{ user[1] }}!</h2>
+    <h2><i class="bi bi-person-badge-fill"></i> I Dettagli del tuo account, {{ user[1] }}!</h2>
 
     <div class="user-info">
         <p><strong><i class="bi bi-person"></i> Username:</strong> {{ user[1] }}</p>
@@ -77,6 +77,14 @@
             <i class="bi bi-box-arrow-right"></i> Logout
         </a>
     </div>
+
+    <form action="{{ url_for('delete_account') }}" method="POST" onsubmit="return confirm('Sei sicuro di voler eliminare il tuo account? Questa azione è irreversibile!')">
+    <button type="submit" class="btn btn-danger mt-4">
+        <i class="bi bi-trash3-fill"></i> Elimina Account
+    </button>
+    </form>
+
+
 </div>
 {% endblock %}
 
