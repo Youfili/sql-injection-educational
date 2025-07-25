@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 import sqlite3  
+from datetime import datetime
+import re
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'supersecretkey'  # Necessaria per i messaggi flash e per session
@@ -11,7 +13,7 @@ def index():
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-
+        
         username = request.form['username'] 
         passwd = request.form['password']
         conf_passwd = request.form['confirm_password']
@@ -22,10 +24,16 @@ def register():
         terms = request.form['terms']
         priv = request.form['privacy']
 
+
         # Controllo se le password coincidono
         if passwd != conf_passwd:
             flash("Le password NON coincidono.")
             return redirect(url_for('register'))
+        
+        ### NOTA : No hashing password, lasciata in chiaro a scopo didattico.   ###
+        #from werkzeug.security import generate_password_hash
+        #hashed_passwd = generate_password_hash(passwd)
+
 
         # Verifico che durante registrazione utente abbia accettato termini e privacy
         if not terms or not priv:
@@ -37,6 +45,37 @@ def register():
         terms_accepted = 1 if terms else 0
         privacy_accepted = 1 if priv else 0
 
+        ###### -- VERIFICHE FORMATTAZIONE FORM --- ####
+        # Username
+        if not(3 <= len(username) <= 20):
+            flash("❌ Lo username deve essere tra 3 e 20 caratteri.", "danger")
+            return redirect(url_for('register'))
+
+        # Password
+        if len(passwd) < 8 or not re.search(r'\d', passwd) or not re.search(r'\W', passwd):
+            flash("❌ La password deve avere almeno 8 caratteri, un numero e un carattere speciale.", "danger")
+            return redirect(url_for('register'))
+
+        # Telefono
+        if not re.fullmatch(r'[1-9][0-9]{9}', phone):
+            flash("❌ Numero di telefono non valido.", "danger")
+            return redirect(url_for('register'))
+        
+        # Data da Nascita --> utente registrante deve avere ALMENO 18 anni
+        try:
+            nascita = datetime.strptime(bday, "%Y-%m-%d")
+            oggi = datetime.today()
+            anni = oggi.year - nascita.year - ((oggi.month, oggi.day) < (nascita.month, nascita.day))
+            if anni < 18:
+                flash("❌ Devi avere almeno 18 anni per registrarti.", "danger")
+                return redirect(url_for('register'))
+        except ValueError:
+            flash("❌ Data di nascita non valida.", "danger")
+            return redirect(url_for('register'))
+
+
+        # Mi connetto al DB e registro l'utente
+
         try:
             connection = sqlite3.connect('database.db')
             cursor = connection.cursor()
@@ -44,7 +83,7 @@ def register():
             # Eseguo la query
             cursor.execute(""" INSERT INTO users (username, password, email, gender, phone, birthdate, terms_accepted, privacy_accepted) 
                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", 
-                           (username, passwd, em, gend.capitalize(), phone, bday, 1, 1))
+                           (username, passwd, em, gend.capitalize(), phone, bday, terms_accepted, privacy_accepted))
             
             connection.commit()
             
@@ -61,9 +100,9 @@ def register():
         
         except sqlite3.IntegrityError as e:
         
-            if "username" in str(e).lower():
+            if "username" in str(e).lower() and "unique" in str(e).lower():
                 flash("❌ Username già in uso! Provane un altro :)", "danger")
-            elif "email" in str(e).lower():
+            elif "email" in str(e).lower() and "unique" in str(e).lower():
                 flash("❌ Email già registrata! Prova con un'altra :)", "danger")
             else:
                 flash(f"❌ Errore durante la registrazione: {str(e)}", "danger")
