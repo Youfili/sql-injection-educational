@@ -34,7 +34,6 @@ def register():
         #from werkzeug.security import generate_password_hash
         #hashed_passwd = generate_password_hash(passwd)
 
-
         # Verifico che durante registrazione utente abbia accettato termini e privacy
         if not terms or not priv:
             flash("Devi accettare i termini di servizio e la privacy policy per poterti registrare.")
@@ -121,6 +120,10 @@ def register():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
+
+        session.clear()     # Faccio il clear della sessione precedente 
+                            # Risolto problema Tautologia login con ultima email loggata anche senza conoscerla
+
         em = request.form['email']
         passwd = request.form['password']
 
@@ -136,7 +139,9 @@ def login():
             """
 
             # realizzo la query di ricerca --> VULNERABILE
-            query = f"SELECT * FROM Users WHERE email= '{em}' AND password='{passwd}'"
+            query = f"SELECT * FROM Users WHERE (email='{em}' AND password='{passwd}')"
+
+
             cursor.execute(query)   
 
             # controllo se l'utente con queste credenziali esiste nel database:
