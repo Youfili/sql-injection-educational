@@ -1,66 +1,87 @@
 from flask import Flask, render_template, request, redirect, flash, session, url_for
-import sqlite3  
+import psycopg2
 from datetime import datetime
 import re
+
+"""
+Per Hashing password, OMESSA per fini Didattici
+
+from werkzeug.security import generate_password_hash
+"""
 
 app = Flask(__name__, template_folder='templates')
 app.secret_key = 'supersecretkey'  # Necessaria per i messaggi flash e per session
 
+# Funzione di connessione al database PostgreSQL
+def get_db_connection():
+    conn = psycopg2.connect(
+        dbname="sqlinjection_db",
+        user="ryan",
+        password="prova",
+        host="localhost",
+        port="5432"
+    )
+    return conn
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')  # home page
+    return render_template('index.html')
+
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        
-        username = request.form['username'] 
+        username = request.form['username']
         passwd = request.form['password']
         conf_passwd = request.form['confirm_password']
         em = request.form['email']
         gend = request.form['gender']
-        phone = request.form.get('phone','')
+        phone = request.form.get('phone', '')
         bday = request.form['birthdate']
-        terms = request.form['terms']
-        priv = request.form['privacy']
+        terms = request.form.get('terms')
+        priv = request.form.get('privacy')
+        """
+        NOTA: se l'utente non spunta il checkbox, quei campi non sono inviati nel form e questo solleverebbe un KeyError su request.form['terms'].
+                Quindi è meglio usare .get()
+        """
 
 
-        # Controllo se le password coincidono
+
+        # Controllo se password e confirm_password sono Uguali
         if passwd != conf_passwd:
             flash("Le password NON coincidono.")
             return redirect(url_for('register'))
-        
-        ### NOTA : No hashing password, lasciata in chiaro a scopo didattico.   ###
-        #from werkzeug.security import generate_password_hash
-        #hashed_passwd = generate_password_hash(passwd)
 
-        # Verifico che durante registrazione utente abbia accettato termini e privacy
+        # Controllo Termini e Privacy
         if not terms or not priv:
             flash("Devi accettare i termini di servizio e la privacy policy per poterti registrare.")
             return redirect(url_for('register'))
 
-        # Converto ad Interi per salvataggio nel DB
-        # in SQLite il Boolean è un Integer, o 0 o 1
-        terms_accepted = 1 if terms else 0
-        privacy_accepted = 1 if priv else 0
-
-        ###### -- VERIFICHE FORMATTAZIONE FORM --- ####
-        # Username
-        if not(3 <= len(username) <= 20):
-            flash("❌ Lo username deve essere tra 3 e 20 caratteri.", "danger")
+    
+        # Username: Lunghezza e caratteri consentiti (lettere, numeri, underscore)
+        if not (3 <= len(username) <= 20) or not re.match(r'^\w+$', username):
+            flash("❌ Lo username deve essere tra 3 e 20 caratteri e contenere solo lettere, numeri o underscore.", "danger")
             return redirect(url_for('register'))
 
-        # Password
+        # Password:  almeno 8 caratteri, almeno un numero e un carattere speciale
         if len(passwd) < 8 or not re.search(r'\d', passwd) or not re.search(r'\W', passwd):
             flash("❌ La password deve avere almeno 8 caratteri, un numero e un carattere speciale.", "danger")
             return redirect(url_for('register'))
-
-        # Telefono
-        if not re.fullmatch(r'[1-9][0-9]{9}', phone):
-            flash("❌ Numero di telefono non valido.", "danger")
-            return redirect(url_for('register'))
         
-        # Data da Nascita --> utente registrante deve avere ALMENO 18 anni
+        # Email: validazione regex server side (molto base)
+        email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+        if not re.match(email_regex, em):
+            flash("Email non valida.", "danger")
+            return redirect(url_for('register'))
+
+
+        # Telefono: validazione
+        if phone and not re.fullmatch(r'[1-9][0-9]{9}', phone):
+            flash("Numero di telefono non valido.", "danger")
+            return redirect(url_for('register'))
+
+        # Data di Nascita --> deve essere Maggiorenne
         try:
             nascita = datetime.strptime(bday, "%Y-%m-%d")
             oggi = datetime.today()
@@ -71,44 +92,48 @@ def register():
         except ValueError:
             flash("❌ Data di nascita non valida.", "danger")
             return redirect(url_for('register'))
+        
+        # Termini e Privacy
+        if not terms or not priv:
+            flash("Devi accettare i termini di servizio e la privacy policy per poterti registrare.")
+            return redirect(url_for('register'))
+
+        terms_accepted = True if terms else False
+        privacy_accepted = True if priv else False
 
 
-        # Mi connetto al DB e registro l'utente
+        """
+        Hashing della password OMESSA per fini Didattici
+
+        # Hash della password prima di salvare
+        hashed_passwd = generate_password_hash(passwd)
+        """
+
+        # Connessione al DB
+        connection = get_db_connection()
+        cursor = connection.cursor()
 
         try:
-            connection = sqlite3.connect('database.db')
-            cursor = connection.cursor()
-           
-            # Eseguo la query
-            cursor.execute(""" INSERT INTO users (username, password, email, gender, phone, birthdate, terms_accepted, privacy_accepted) 
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", 
-                           (username, passwd, em, gend.capitalize(), phone, bday, terms_accepted, privacy_accepted))
-            
-            connection.commit()
-            
-            """
-            # Query volutamente VULNERABILE per testare SQLi
-            query = f"INSERT INTO users (username, password, email) VALUES ('{username}', '{passwd}', '{em}')"
-            cursor.execute(query)
-            connection.commit()
-            """
+            cursor.execute("""
+                INSERT INTO users (username, password, email, gender, phone, birthdate, terms_accepted, privacy_accepted)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            """, (username, passwd, em, gend, phone, bday, terms_accepted, privacy_accepted))
 
+            connection.commit()
             flash("✅ Utente registrato con successo!\n Ora fai il login :)", "success")
             return redirect('/login')
-        
-        
-        except sqlite3.IntegrityError as e:
-        
+
+        except Exception as e:
             if "username" in str(e).lower() and "unique" in str(e).lower():
                 flash("❌ Username già in uso! Provane un altro :)", "danger")
             elif "email" in str(e).lower() and "unique" in str(e).lower():
                 flash("❌ Email già registrata! Prova con un'altra :)", "danger")
             else:
                 flash(f"❌ Errore durante la registrazione: {str(e)}", "danger")
-            
+
         finally:
+            cursor.close()
             connection.close()
-        
 
         return redirect(url_for('register'))
 
@@ -116,128 +141,93 @@ def register():
 
 
 
-
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-
-        session.clear()     # Faccio il clear della sessione precedente 
-                            # Risolto problema Tautologia login con ultima email loggata anche senza conoscerla
-
+        session.clear()
         em = request.form['email']
         passwd = request.form['password']
 
-        # Ricerco all'interno del database se esiste una persona registrata con queste credenziali
-        try: 
-            connection = sqlite3.connect('database.db')
+        try:
+            connection = get_db_connection()
             cursor = connection.cursor()
-
-            # QUERY più SICURA
-            """
-            query = "SELECT * FROM Users WHERE email = ? AND password = ?"
-            cursor.execute(query, (em, passwd))
-            """
-
-            # realizzo la query di ricerca --> VULNERABILE
-            query = f"SELECT * FROM Users WHERE (email='{em}' AND password='{passwd}')"
-
-
-            cursor.execute(query)   
-
-            # controllo se l'utente con queste credenziali esiste nel database:
+            cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (em, passwd))
             user = cursor.fetchone()
+
+            """
+            if user and check_password_hash(user[2], passwd):  # la password hashata è al campo index 2
+            """
+
             if user:
-                session['user_id'] = user[0]    #salvo l'ID utente nella sessione
-                session['username'] = user[1]   # salvo anche l'username dell'utente nella sessione
-
+                session['user_id'] = user[0]
+                session['username'] = user[1]
                 flash("✅ Ti sei loggato con successo!", "success")
-                # mi dirigo verso la schermata dashboard di questo utente che si è appena loggato
                 return redirect(f"/dashboard/{session['username']}")
-
             else:
                 flash("❌ Email o Password Errati.", "danger")
 
-        except sqlite3.Error as e:
-            flash(f"❌ Errore generico del database: {str(e)}", "danger")
+        except Exception as e:
+            flash(f"❌ Errore del database: {str(e)}", "danger")
 
         finally:
             connection.close()
 
         return redirect(url_for('login'))
 
-    return render_template('login.html')        # Renderizzo la pagina html del login
+    return render_template('login.html')
 
 
-
-
-@app.route('/dashboard/<username>', methods=['GET'])    # dashboard del singolo utente per vedere le sue informazioni
+@app.route('/dashboard/<username>', methods=['GET'])
 def dashboard(username):
-
     if 'user_id' not in session or 'username' not in session:
         flash("❌ Devi effettuare il login per accedere alla dashboard.", "warning")
         return redirect(url_for('login'))
-    
-    # Faccio un controllo affinchè venga verificato che 'username' sia uguale a session['username']
-    # Cosi un utente non può digitare /dashboard/mario se è loggato come luigi
+
     if session['username'] != username:
         flash("⛔ Accesso negato: non puoi visualizzare la dashboard di un altro utente!", "danger")
         return redirect('/login')
 
-
-
-    # ricavo l'user direttamente dalla sessione attiva
     user_id = session.get('user_id')
-
-    connection = sqlite3.connect('database.db')
+    connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM Users WHERE id = ?", (user_id, )) # mi ricavo l'utente con questo id
+    cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
     user = cursor.fetchone()
-
     connection.close()
-    
+
     return render_template('dashboard.html', user=user)
 
 
 @app.route('/logout')
 def logout():
-    session.clear()     # libero la sessione attuale
-    # flash("👋 Logout effettuato correttamente!", "info")
+    session.clear()
     return redirect('/')
 
 
 @app.route('/delete_account', methods=['POST'])
 def delete_account():
-    if 'user_id' not in session:        # un utente può elimare il suo account solo se loggato
+    if 'user_id' not in session:
         flash("❌ Devi essere loggato per poter eliminare l'account.", "danger")
         return redirect(url_for('login'))
 
-    user_id = session['user_id']        # assegno alla variabile il valore di 'user_id' nella sessione attuale
-
-    connection = sqlite3.connect('database.db')
+    user_id = session['user_id']
+    connection = get_db_connection()
     cursor = connection.cursor()
-    cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))    # elimino la ennupla dal database 
+    cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
     connection.commit()
     connection.close()
-
-    # Dopo l'eliminazione, svuoto la sessione e rimando alla home
     session.clear()
-    #flash("✅ Il tuo account è stato eliminato con successo.", "success")
     return redirect(url_for('index'))
-
 
 
 @app.route('/utenti', methods=('GET',))
 def utenti():
-    connection = sqlite3.connect('database.db')
+    connection = get_db_connection()
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
     connection.close()
-
     return render_template('utenti.html', users=users)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
-

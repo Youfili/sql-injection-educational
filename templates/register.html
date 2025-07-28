@@ -17,26 +17,52 @@
         <!-- USERNAME -->
         <div class="mb-3">
             <label for="username">Username</label>
-            <input type="text" class="form-control" name="username" required minlength="3" maxlength="20">
+            <input type="text" class="form-control" id="username" name="username" required minlength="3" maxlength="20">
+            <span id="username-error" style="color: red; display: none; font-size: 0.9em;">
+                Lo username deve essere tra 3 e 20 caratteri.
+            </span>
         </div>
 
         <!-- EMAIL -->
         <div class="mb-3">
             <label for="email">Email</label>
-            <input type="email" class="form-control" name="email" required>
+            <input type="email" class="form-control" id="email" name="email" required>
+            <span id="email-error" style="color: red; display: none; font-size: 0.9em;">
+                Inserisci un indirizzo email valido.
+            </span>
         </div>
 
         <!-- PASSWORD -->
         <div class="mb-3">
             <label for="password">Password</label>
-            <input type="password" class="form-control" name="password" required pattern="(?=.*\d)(?=.*[\W_]).{8,}">
+            <div class="password-wrapper">
+                <input type="password" class="form-control" name="password" id="password"
+                    required pattern="(?=.*\d)(?=.*[\W_]).{8,}"
+                    oninvalid="this.setCustomValidity('La password deve avere almeno 8 caratteri, un numero e un carattere speciale.')"
+                    oninput="this.setCustomValidity('')">
+                <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                    <i class="bi bi-eye-slash"></i>
+                </button>
+            </div>
         </div>
 
-        <!-- CONFIRM-PASSWORD -->
+        <!-- CONFIRM PASSWORD -->
         <div class="mb-3">
             <label for="confirm_password">Conferma Password</label>
-            <input type="password" class="form-control" name="confirm_password" required pattern="(?=.*\d)(?=.*[\W_]).{8,}">
+            <div class="password-wrapper">
+                <input type="password" class="form-control" name="confirm_password" id="confirm_password"
+                    required pattern="(?=.*\d)(?=.*[\W_]).{8,}"
+                    oninvalid="this.setCustomValidity('La conferma password deve rispettare i requisiti di sicurezza.')"
+                    oninput="this.setCustomValidity('')">
+                <button type="button" class="toggle-password" onclick="togglePassword('confirm_password', this)">
+                    <i class="bi bi-eye-slash"></i>
+                </button>
+            </div>
         </div>
+
+        <span id="password-error" style="color: red; display: none; font-size: 0.9em;">
+            Le password non coincidono.
+        </span>
 
         <!-- SESSO -->
         <div class="mb-3">
@@ -50,14 +76,20 @@
 
         <!-- TELEFONO -->
         <div class="mb-3">
-            <label for="phone">Telefono (opzionale)</label>
-            <input type="text" class="form-control" name="phone" required pattern="^[1-9][0-9]{9}$">
+            <label for="phone">Telefono</label>
+            <input type="text" class="form-control" id="phone" name="phone" required pattern="^[1-9][0-9]{9}$">
+            <span id="phone-error" style="color: red; display: none; font-size: 0.9em;">
+                Il numero di telefono deve contenere 10 cifre e non iniziare con zero.
+            </span>
         </div>
 
         <!-- ANNO_NASCITA -->
         <div class="mb-3">
             <label for="birthdate">Data di nascita</label>
-            <input type="date" class="form-control" name="birthdate" required>
+            <input type="date" class="form-control" name="birthdate" id="birthdate" required>
+            <span id="birthdate-error" style="color: red; display: none; font-size: 0.9em;">
+                Devi essere maggiorenne (almeno 18 anni).
+            </span>
         </div>
 
         <!-- TERMINI_CONDIZIONI -->
@@ -76,17 +108,224 @@
             </label>
         </div>
 
-        <!-- REGISTRATI_BUTTON -->
+        <!-- REGISTRATI -->
         <button type="submit" class="btn btn-primary">Registrati</button>
     </form>
 
-    <!-- TORNA_ALLA_HOME_BUTTON -->
-    <div class="back">
+    <div class="back mt-3">
         <a href="/" style="color: #dfe6e9; text-decoration: none; display: block; text-align: center;">
             <i class="bi bi-arrow-left"></i> Torna alla Home
         </a>
     </div>
-    
 </div>
-{% endblock %}
 
+<!-- CSS STILE -->
+<style>
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem;
+  height: 42px;
+  box-sizing: border-box;
+  font-size: 16px;
+  background-color: white;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  border-radius: 4px;
+}
+
+.toggle-password:hover {
+  background-color: #f1f1f1;
+  color: #343a40;
+}
+</style>
+
+<!-- JS: TOGGLE PASSWORD -->
+<script>
+function togglePassword(fieldId, button) {
+    const input = document.getElementById(fieldId);
+    const icon = button.querySelector('i');
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    }
+}
+</script>
+
+<!-- JS: MATCH PASSWORDS -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirm_password");
+    const errorSpan = document.getElementById("password-error");
+    const form = document.querySelector("form");
+
+    function checkPasswordMatch() {
+        if (password.value !== confirmPassword.value) {
+            errorSpan.style.display = "block";
+            return false;
+        } else {
+            errorSpan.style.display = "none";
+            return true;
+        }
+    }
+
+    confirmPassword.addEventListener("input", checkPasswordMatch);
+    password.addEventListener("input", checkPasswordMatch);
+
+    form.addEventListener("submit", function(e) {
+        if (!checkPasswordMatch()) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
+<!--JS Username, Email, Telefono-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const form = document.querySelector("form");
+
+    const password = document.getElementById("password");
+    const confirmPassword = document.getElementById("confirm_password");
+    const passwordError = document.getElementById("password-error");
+
+    const phone = document.getElementById("phone");
+    const phoneError = document.getElementById("phone-error");
+
+    const email = document.getElementById("email");
+    const emailError = document.getElementById("email-error");
+
+    const username = document.getElementById("username");
+    const usernameError = document.getElementById("username-error");
+
+    function checkPasswordMatch() {
+        if (password.value !== confirmPassword.value) {
+            passwordError.style.display = "block";
+            return false;
+        } else {
+            passwordError.style.display = "none";
+            return true;
+        }
+    }
+
+    function checkPhone() {
+        // pattern già impostato, ma qui per mostrare errore personalizzato
+        const regex = /^[1-9][0-9]{9}$/;
+        if (!regex.test(phone.value)) {
+            phoneError.style.display = "block";
+            return false;
+        } else {
+            phoneError.style.display = "none";
+            return true;
+        }
+    }
+
+    function checkEmail() {
+        // semplice check email con HTML5
+        if (!email.checkValidity()) {
+            emailError.style.display = "block";
+            return false;
+        } else {
+            emailError.style.display = "none";
+            return true;
+        }
+    }
+
+    function checkUsername() {
+        if (username.value.length < 3 || username.value.length > 20) {
+            usernameError.style.display = "block";
+            return false;
+        } else {
+            usernameError.style.display = "none";
+            return true;
+        }
+    }
+
+    // Event listeners per validazione in tempo reale
+    confirmPassword.addEventListener("input", checkPasswordMatch);
+    password.addEventListener("input", checkPasswordMatch);
+
+    phone.addEventListener("input", checkPhone);
+    email.addEventListener("input", checkEmail);
+    username.addEventListener("input", checkUsername);
+
+    form.addEventListener("submit", function(e) {
+        // Blocca submit se uno dei controlli fallisce
+        if (!checkPasswordMatch() || !checkPhone() || !checkEmail() || !checkUsername()) {
+            e.preventDefault();
+        }
+    });
+});
+
+</script>
+
+<!-- JS Script per Data di Nascita -> Controllo sia Maggiorenne -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const birthdate = document.getElementById("birthdate");
+    const birthdateError = document.getElementById("birthdate-error");
+    const form = document.querySelector("form");
+
+    function isAdult(dateString) {
+        const today = new Date();
+        const birthDate = new Date(dateString);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age >= 18;
+    }
+
+    function validateBirthdate() {
+        if (!birthdate.value || !isAdult(birthdate.value)) {
+            birthdateError.style.display = "block";
+            birthdate.setCustomValidity("Devi essere maggiorenne (almeno 18 anni).");
+            return false;
+        } else {
+            birthdateError.style.display = "none";
+            birthdate.setCustomValidity("");
+            return true;
+        }
+    }
+
+    birthdate.addEventListener("input", validateBirthdate);
+
+    form.addEventListener("submit", function(e) {
+        if (!validateBirthdate()) {
+            e.preventDefault();
+        }
+    });
+});
+</script>
+
+
+
+
+{% endblock %}
