@@ -11,7 +11,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     gender Gender NOT NULL,
-    phone VARCHAR(10) NOT NULL,
+    phone VARCHAR(10) UNIQUE NOT NULL,
     birthdate DATE NOT NULL,
     terms_accepted BOOLEAN NOT NULL,
     privacy_accepted BOOLEAN NOT NULL CHECK (privacy_accepted = TRUE)

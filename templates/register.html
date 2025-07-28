@@ -3,7 +3,7 @@
 {% block title %}Registrazione - SQL Injection Demo{% endblock %}
 
 {% block content %}
-<div class="form-container">
+<div class="glass-card">
     <h2><i class="bi bi-person-plus"></i> Registrati</h2>
     <form method="post" action="{{ url_for('register') }}">
         {% with messages = get_flashed_messages() %}
@@ -122,6 +122,21 @@
 <!-- CSS STILE -->
 <style>
 
+/* Allargo e stilo il contenitore del form */
+.glass-card {
+    /* Sovrascrivo lo style glass-card di base.html con queste dimensioni solo per register */
+    max-width: 500px;
+    margin-top: 10px; /* sovrascrivo solo questa */
+    width: 40%;      /* o solo alcune dimensioni */
+    
+}
+
+/* Stile pulsanti accettazione termini e privacy*/
+.form-check-input {
+  margin-left: 0.1rem;
+}
+
+/* Password toggle button */
 .password-wrapper {
   position: relative;
 }

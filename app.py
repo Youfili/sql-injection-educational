@@ -128,6 +128,8 @@ def register():
                 flash("❌ Username già in uso! Provane un altro :)", "danger")
             elif "email" in str(e).lower() and "unique" in str(e).lower():
                 flash("❌ Email già registrata! Prova con un'altra :)", "danger")
+            elif "phone" in str(e).lower() and "unique" in str(e).lower():
+                flash("❌ Telefono già registrato! Prova con un altro :)", "danger")
             else:
                 flash(f"❌ Errore durante la registrazione: {str(e)}", "danger")
 
