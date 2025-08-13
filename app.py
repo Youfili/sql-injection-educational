@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, flash, session, url
 import psycopg2
 from datetime import datetime
 import re
+from psycopg2 import extensions     # per PiggyBack Query
 
 """
 Per Hashing password, OMESSA per fini Didattici
@@ -147,15 +148,78 @@ def register():
 def login():
     if request.method == 'POST':
         session.clear()
+
         em = request.form['email']
         passwd = request.form['password']
 
         try:
             connection = get_db_connection()
+
+            connection.set_session(autocommit=True)  # Autocommit utile quando faccio UPDATE “al volo” nella PiggyBack Query
+            # autocommit=True è fondamentale per fare l’UPDATE nel PiggyBack senza dover fare connection.commit() dopo.
+            
+
+
             cursor = connection.cursor()
+            
+            # ESEMPIO VULNERABILE — SOLO PER SCOPI DIDATTICI
+            # query = f"SELECT * FROM users WHERE email = '{em}' AND password = '{passwd}'"
+            query = f"SELECT * FROM users WHERE email = '{em}' AND (password = '{passwd}')"
+            
+            # Per PiggyBack Query in Postgres devo scompattare le query, Se l'input contiene più comandi, li separo ed eseguo tutti
+            # Evito di fare fetchone() su query che non hanno risultati.
+            
+            if ";" in query:
+                parts = [q.strip() for q in query.split(";") if q.strip() and not q.strip().startswith("--")]
+                first_result = None
+                for i, q in enumerate(parts):
+                    cursor.execute(q)
+                    # Salvo il risultato solo se è la prima query e se è una SELECT
+                    if i == 0 and q.strip().lower().startswith("select"):
+                        first_result = cursor.fetchone()
+            else:
+                cursor.execute(query)
+                first_result = cursor.fetchone()
+
+            user = first_result
+
+
+            """
+            La strip() elimina spazi bianchi.
+            Il if q scarta le stringhe vuote.   
+            Il not q.startswith("--") e not q.startswith("/*") evita di mandare a PostgreSQL righe di commento, che darebbero errore.
+        
+            """
+
+            """
+            Cosa cambia:
+            Tautologia: funziona uguale, perché non ci sono ;.
+
+            EOL Comment: funziona uguale, perché non ci sono ;.
+
+            PiggyBack: funziona, perché se nel campo password ci metti ad esempio
+
+                allora split(";") produrrà due query:
+
+                    SELECT * FROM users WHERE email = '...' AND (password = '' )
+
+                    UPDATE users SET password='hacked' WHERE username='Fabiola' --
+
+            """
+
+
+            # user = cursor.fetchone()  # definisco SEMPRE user, fetchone dopo la SELECT
+
+            # NOTA
+            # ---- Se la query conteneva anche UPDATE, non darà errore ----
+            # Perché in autocommit il driver esegue anche comandi extra separati da ';'
+
+
+            """
+            # QUERY SICURA
             cursor.execute("SELECT * FROM users WHERE email = %s AND password = %s", (em, passwd))
             user = cursor.fetchone()
-
+            """ 
             """
             if user and check_password_hash(user[2], passwd):  # la password hashata è al campo index 2
             """
@@ -163,7 +227,7 @@ def login():
             if user:
                 session['user_id'] = user[0]
                 session['username'] = user[1]
-                flash("✅ Ti sei loggato con successo!", "success")
+                flash("✅ Login effettuato con successo!", "success")
                 return redirect(f"/dashboard/{session['username']}")
             else:
                 flash("❌ Email o Password Errati.", "danger")
