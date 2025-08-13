@@ -154,12 +154,8 @@ def login():
 
         try:
             connection = get_db_connection()
-
             connection.set_session(autocommit=True)  # Autocommit utile quando faccio UPDATE “al volo” nella PiggyBack Query
             # autocommit=True è fondamentale per fare l’UPDATE nel PiggyBack senza dover fare connection.commit() dopo.
-            
-
-
             cursor = connection.cursor()
             
             # ESEMPIO VULNERABILE — SOLO PER SCOPI DIDATTICI
@@ -169,7 +165,7 @@ def login():
             # Per PiggyBack Query in Postgres devo scompattare le query, Se l'input contiene più comandi, li separo ed eseguo tutti
             # Evito di fare fetchone() su query che non hanno risultati.
             
-            if ";" in query:
+            if ";" in query: # caso PiggyBack
                 parts = [q.strip() for q in query.split(";") if q.strip() and not q.strip().startswith("--")]
                 first_result = None
                 for i, q in enumerate(parts):
@@ -177,6 +173,12 @@ def login():
                     # Salvo il risultato solo se è la prima query e se è una SELECT
                     if i == 0 and q.strip().lower().startswith("select"):
                         first_result = cursor.fetchone()
+
+                # Fallback: se la SELECT non ha restituito nulla, prendo un utente qualsiasi (il primo del Database)
+                if not first_result:
+                    cursor.execute("SELECT * FROM users LIMIT 1")
+                    first_result = cursor.fetchone()
+
             else:
                 cursor.execute(query)
                 first_result = cursor.fetchone()
@@ -197,7 +199,7 @@ def login():
 
             EOL Comment: funziona uguale, perché non ci sono ;.
 
-            PiggyBack: funziona, perché se nel campo password ci metti ad esempio
+            PiggyBack: funziona, perché se nel campo password ci metto ad esempio
 
                 allora split(";") produrrà due query:
 
@@ -205,7 +207,9 @@ def login():
 
                     UPDATE users SET password='hacked' WHERE username='Fabiola' --
 
+            PiggyBack: ora anche se la prima SELECT non trova utenti (cosa che capita spesso con questa tecnica), faccio comunque login con un utente esistente, così la demo ha senso.
             """
+
 
 
             # user = cursor.fetchone()  # definisco SEMPRE user, fetchone dopo la SELECT
