@@ -165,6 +165,7 @@ def login():
             # Per PiggyBack Query in Postgres devo scompattare le query, Se l'input contiene più comandi, li separo ed eseguo tutti
             # Evito di fare fetchone() su query che non hanno risultati.
             
+            # Gestione PiggyBack
             if ";" in query: # caso PiggyBack
                 parts = [q.strip() for q in query.split(";") if q.strip() and not q.strip().startswith("--")]
                 first_result = None
@@ -172,7 +173,15 @@ def login():
                     cursor.execute(q)
                     # Salvo il risultato solo se è la prima query e se è una SELECT
                     if i == 0 and q.strip().lower().startswith("select"):
-                        first_result = cursor.fetchone()
+                        # Prendo tutte le righe per vedere se c'è enumerazione
+                        results = cursor.fetchall()
+                        if results:
+                            first_result = results[0]
+                            # Salvo risultati completi solo se l'input è sospetto
+                            if "union" in query.lower() or "information_schema" in query.lower():
+                                session['enum_results'] = results
+                            else:
+                                session.pop('enum_results', None)  # pulisce vecchi dati
 
                 # Fallback: se la SELECT non ha restituito nulla, prendo un utente qualsiasi (il primo del Database)
                 if not first_result:
@@ -181,7 +190,13 @@ def login():
 
             else:
                 cursor.execute(query)
-                first_result = cursor.fetchone()
+                results = cursor.fetchall()
+                # Salvo risultati solo se sospetto
+                if "union" in query.lower() or "information_schema" in query.lower():
+                    session['enum_results'] = results
+                else:
+                    session.pop('enum_results', None)
+                first_result = results[0] if results else None
 
             user = first_result
 
@@ -232,7 +247,14 @@ def login():
                 session['user_id'] = user[0]
                 session['username'] = user[1]
                 flash("✅ Login effettuato con successo!", "success")
+                
+                # Se ci sono dati extra, vado su una pagina dedicata che li mostra
+                if session.get('enum_results'):
+                    return redirect(url_for('enum_results_page'))
+                
+                # altrimenti, classico vado in dashboard
                 return redirect(f"/dashboard/{session['username']}")
+            
             else:
                 flash("❌ Email o Password Errati.", "danger")
 
@@ -297,6 +319,13 @@ def utenti():
     users = cursor.fetchall()
     connection.close()
     return render_template('utenti.html', users=users)
+
+
+@app.route('/enum_results')
+def enum_results_page():
+    # Mostro risultati enumerazione
+    results = session.get('enum_results', [])
+    return render_template('enum_results.html', results=results)
 
 
 if __name__ == '__main__':

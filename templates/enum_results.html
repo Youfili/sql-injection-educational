@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Risultati Enumerazione DB{% endblock %}
+
+{% block content %}
+<div class="glass-card">
+    <h1>📂 Risultati Enumerazione Database</h1>
+    <p class="note">Questi dati sono stati ottenuti tramite SQL Injection.</p>
+    
+    {% if results %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-sm mt-3">
+                <thead class="table-dark">
+                    <tr>
+                        {% for col_index in range(results[0]|length) %}
+                            <th>Colonna {{ col_index + 1 }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in results %}
+                        <tr>
+                            {% for col in row %}
+                                <td>{{ col }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-warning mt-3">
+            Nessun dato disponibile.
+        </div>
+    {% endif %}
+
+    <a href="{{ url_for('login') }}" class="btn btn-glow mt-3">🔙 Torna al Login</a>
+</div>
+{% endblock %}
