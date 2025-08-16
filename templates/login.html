@@ -20,16 +20,86 @@
 
     <!-- FORM -->
     <form method="POST">
-        <input type="text" name="email" id="email" class="form-control" placeholder="Email" value="{{ request.form.get('email', '') }}" required>
-        <input type="password" name="password" id="password" class="form-control" placeholder="Password" value="{{ request.form.get('password', '') }}" required>
+        <!-- Email -->
+        <div class="mb-3">
+            <input type="text" name="email" id="email" class="form-control" placeholder="Email" 
+                   value="{{ request.form.get('email', '') }}" required>
+        </div>
+
+        <!-- Password con occhio -->
+        <div class="mb-3">
+            <div class="password-wrapper">
+                <input type="password" name="password" id="password" class="form-control" 
+                       placeholder="Password" value="{{ request.form.get('password', '') }}" required>
+                <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                    <i class="bi bi-eye-slash"></i>
+                </button>
+            </div>
+        </div>
         
         <button type="submit" class="btn-glow"><i class="bi bi-box-arrow-in-right"></i> Login </button>
     </form>
 
-    <div class="back">
+    <div class="back mt-3">
         <a href="/" style="color: #dfe6e9; text-decoration: none; display: block; text-align: center;">
             <i class="bi bi-arrow-left"></i> Torna alla Home
         </a>
     </div>
 </div>
+
+<!-- STILE PASSWORD TOGGLE (stesso del register) -->
+<style>
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 2.5rem; /* spazio per l’occhio */
+  height: 42px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.toggle-password {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
+  border-radius: 4px;
+}
+
+.toggle-password:hover {
+  background-color: #f1f1f1;
+  color: #343a40;
+}
+</style>
+
+<!-- Script toggle password -->
+<script>
+function togglePassword(fieldId, button) {
+    const input = document.getElementById(fieldId);
+    const icon = button.querySelector('i');
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove("bi-eye-slash");
+        icon.classList.add("bi-eye");
+    } else {
+        input.type = "password";
+        icon.classList.remove("bi-eye");
+        icon.classList.add("bi-eye-slash");
+    }
+}
+</script>
 {% endblock %}
