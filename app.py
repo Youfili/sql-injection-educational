@@ -159,7 +159,6 @@ def login():
             cursor = connection.cursor()
             
             # ESEMPIO VULNERABILE — SOLO PER SCOPI DIDATTICI
-            # query = f"SELECT * FROM users WHERE email = '{em}' AND password = '{passwd}'"
             query = f"SELECT * FROM users WHERE email = '{em}' AND (password = '{passwd}')"
             
             # Per PiggyBack Query in Postgres devo scompattare le query, Se l'input contiene più comandi, li separo ed eseguo tutti
