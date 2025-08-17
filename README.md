@@ -49,22 +49,22 @@ Relazione del progetto include:
 ---
 
 Strumenti utilizzati:
-    - Linguaggio: Python 3.x
-    - Framework web: Flask
-    - Template engine: Jinja2
-    - Database: PostgreSQL
-    - Front-end: HTML5, CSS3, Bootstrap 5, JavaScript
-    - Gestione sessioni: Flask-Session
-    - Sistema operativo di sviluppo: Ubuntu 22.04
+    Linguaggio: Python 3.x
+    Framework web: Flask
+    Template engine: Jinja2
+    Database: PostgreSQL
+    Front-end: HTML5, CSS3, Bootstrap 5, JavaScript
+    Gestione sessioni: Flask-Session
+    Sistema operativo di sviluppo: Ubuntu 22.04
 
 ---
 
 Note aggiuntive:
-    - Il progetto è a scopo didattico, non per utilizzo in ambienti reali.
-    - La sicurezza delle password è volutamente compromessa per dimostrare le vulnerabilità SQLi.
-    - Eventuali miglioramenti futuri possono includere:
-            - Hashing sicuro delle password (bcrypt, Argon2)
-            - Logging avanzato delle query
-            - Filtraggio e validazione più robusta degli input utente
+    Il progetto è a scopo didattico, non per utilizzo in ambienti reali.
+    La sicurezza delle password è volutamente compromessa per dimostrare le vulnerabilità SQLi.
+    Eventuali miglioramenti futuri possono includere:
+            Hashing sicuro delle password (bcrypt, Argon2)
+            Logging avanzato delle query
+            Filtraggio e validazione più robusta degli input utente
 
 ---
