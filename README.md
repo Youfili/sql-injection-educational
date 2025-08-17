@@ -2,6 +2,8 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue) ![Flask](https://img.shields.io/badge/Flask-2.2-orange) ![License](https://img.shields.io/badge/License-MIT-green)  
 
+[Scarica la relazione completa in PDF](docs/relazione.pdf)
+
 ---
 
 ## Descrizione del progetto
@@ -14,34 +16,6 @@ Il progetto simula un’applicazione web con autenticazione utente intenzionalme
 - PiggyBack Query
 
 **Nota:** le password nel database sono lasciate in chiaro per motivi didattici. In un contesto reale dovrebbero essere memorizzate in forma hashata con salatura (bcrypt, Argon2).
-
----
-
-## Struttura del repository
-nome-progetto/
-│
-├── README.md # Questo file
-├── LICENSE # Licenza (opzionale)
-│
-├── src/ # Codice sorgente dell’applicazione
-│ ├── app.py
-│ ├── database.py
-│ └── ...
-│
-├── docs/ # Documentazione e materiali del progetto
-│ ├── relazione.tex # Sorgente LaTeX della relazione
-│ ├── relazione.pdf # PDF finale della relazione
-│ └── immagini/ # Immagini utilizzate nella relazione
-│ ├── logo_universita.jpg
-│ └── diagrammi.png
-│
-├── tests/ # Eventuali script di test
-│ └── test_login.py
-│
-├── requirements.txt # Dipendenze Python
-└── .gitignore # File e cartelle da ignorare
-
-
 
 ---
 
@@ -63,7 +37,55 @@ git clone https://github.com/tuo-profilo/tuo-repo.git
 
 4. Apri il browser e accedi a http://localhost:5000 per testare l’applicazione.
 
+---
 
+Relazione del progetto
 
+La relazione completa in PDF è disponibile qui.
+Include:
 
+Introduzione teorica alla SQL Injection
 
+Tecniche di attacco utilizzate
+
+Analisi dei rischi
+
+Strategie di mitigazione
+
+Esempi di codice
+
+---
+
+Strumenti utilizzati
+
+Linguaggio: Python 3.x
+
+Framework web: Flask
+
+Template engine: Jinja2
+
+Database: PostgreSQL
+
+Front-end: HTML5, CSS3, Bootstrap 5, JavaScript
+
+Gestione sessioni: Flask-Session
+
+Sistema operativo di sviluppo: Ubuntu 22.04
+
+---
+
+Note aggiuntive
+
+Il progetto è a scopo didattico, non per utilizzo in ambienti reali.
+
+La sicurezza delle password è volutamente compromessa per dimostrare le vulnerabilità SQLi.
+
+Eventuali miglioramenti futuri possono includere:
+
+Hashing sicuro delle password (bcrypt, Argon2)
+
+Logging avanzato delle query
+
+Filtraggio e validazione più robusta degli input utente
+
+---
