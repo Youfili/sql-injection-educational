@@ -39,32 +39,29 @@ git clone https://github.com/tuo-profilo/tuo-repo.git
 
 ---
 
-Relazione del progetto include:
-    - Introduzione teorica alla SQL Injection
-    - Tecniche di attacco utilizzate
-    - Analisi dei rischi
-    - Strategie di mitigazione
-    - Esempi di codice
+## Relazione del progetto
+La relazione completa in PDF include:
+- Introduzione teorica alla SQL Injection
+- Tecniche di attacco utilizzate
+- Analisi dei rischi
+- Strategie di mitigazione
+- Esempi di codice
 
----
+## Strumenti utilizzati
+- Linguaggio: Python 3.x
+- Framework web: Flask
+- Template engine: Jinja2
+- Database: PostgreSQL
+- Front-end: HTML5, CSS3, Bootstrap 5, JavaScript
+- Gestione sessioni: Flask-Session
+- Sistema operativo di sviluppo: Ubuntu 22.04
 
-Strumenti utilizzati:
-    Linguaggio: Python 3.x
-    Framework web: Flask
-    Template engine: Jinja2
-    Database: PostgreSQL
-    Front-end: HTML5, CSS3, Bootstrap 5, JavaScript
-    Gestione sessioni: Flask-Session
-    Sistema operativo di sviluppo: Ubuntu 22.04
-
----
-
-Note aggiuntive:
-    Il progetto è a scopo didattico, non per utilizzo in ambienti reali.
-    La sicurezza delle password è volutamente compromessa per dimostrare le vulnerabilità SQLi.
-    Eventuali miglioramenti futuri possono includere:
-            Hashing sicuro delle password (bcrypt, Argon2)
-            Logging avanzato delle query
-            Filtraggio e validazione più robusta degli input utente
-
+## Note aggiuntive
+- Il progetto è a **scopo didattico**, non per utilizzo in ambienti reali
+- La sicurezza delle password è volutamente compromessa per dimostrare le vulnerabilità SQLi
+- Eventuali miglioramenti futuri possono includere:
+  - Hashing sicuro delle password (bcrypt, Argon2)
+  - Logging avanzato delle query
+  - Filtraggio e validazione più robusta degli input utente
+    
 ---
