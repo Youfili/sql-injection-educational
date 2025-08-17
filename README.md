@@ -48,8 +48,8 @@ nome-progetto/
 ## Come eseguire il progetto
 
 1. Clona il repository:
-    ''bash
-    git clone https://github.com/tuo-profilo/tuo-repo.git
+```bash
+git clone https://github.com/tuo-profilo/tuo-repo.git
 
 2. Installa le dipendenze:
     pip install -r requirements.txt
