@@ -9,7 +9,6 @@
 ## Descrizione del progetto
 Questo progetto ha come obiettivo la **dimostrazione pratica delle principali tecniche di attacco SQL Injection** (SQLi) all’interno di applicazioni web.  
 L’attività è stata sviluppata **a scopo didattico**, per comprendere il funzionamento della vulnerabilità, i suoi effetti e le possibili strategie di mitigazione.
-
 Progetto sviluppato per il corso di Sicurezza (Anno Accademico 2025), tenuto dal Prof. Emiliano Casalicchio, nell’ambito del Corso di Laurea in Informatica presso l’Università “La Sapienza” di Roma.
 
 Il progetto simula un’applicazione web con autenticazione utente intenzionalmente vulnerabile, permettendo di testare tre tecniche specifiche di attacco:
