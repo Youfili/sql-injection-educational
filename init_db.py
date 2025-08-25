@@ -7,7 +7,7 @@ try:
     conn = psycopg2.connect(
         dbname="sqlinjection_db",
         user="ryan",
-        password="prova",  # sostituisci con la tua password
+        password="prova",  # sostituisco con la mia password
         host="localhost",
         port="5432"
     )
@@ -15,9 +15,9 @@ try:
     cur = conn.cursor()
 
     with open('schema.sql', 'r') as f:
-        sql_commands = f.read().split(';')  # divide i comandi SQL
+        sql_commands = f.read().split(';')  # divido i comandi SQL
         for command in sql_commands:
-            if command.strip():  # ignora righe vuote
+            if command.strip():  # ignoro righe vuote
                 try:
                     cur.execute(command + ';')
                 except Exception as e:

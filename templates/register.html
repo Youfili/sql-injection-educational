@@ -291,7 +291,7 @@ document.addEventListener("DOMContentLoaded", () => {
     username.addEventListener("input", checkUsername);
 
     form.addEventListener("submit", function(e) {
-        // Blocca submit se uno dei controlli fallisce
+        // Blocco submit se uno dei controlli fallisce
         if (!checkPasswordMatch() || !checkPhone() || !checkEmail() || !checkUsername()) {
             e.preventDefault();
         }
