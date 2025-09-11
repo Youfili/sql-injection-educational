@@ -36,8 +36,6 @@ git clone https://github.com/tuo-profilo/tuo-repo.git
     python3 src/app.py
    ```
 
-4. Apri il browser e accedi a http://localhost:5000 per testare l’applicazione.
-
 ---
 
 ## Relazione del progetto
