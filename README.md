@@ -2,7 +2,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue) ![Flask](https://img.shields.io/badge/Flask-2.2-orange) ![License](https://img.shields.io/badge/License-MIT-green)  
 
-[Scarica la relazione del progetto in PDF](docs/relazione.pdf)
+[Scarica la relazione del progetto in PDF](docs/Sicurezza_Project.pdf)
 
 ---
 
