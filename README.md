@@ -1,4 +1,4 @@
-# Computer Security Project – SQL Injection (SQLi) 
+# Web Application Security – SQL Injection (SQLi) 
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue) 
 ![Flask](https://img.shields.io/badge/Flask-2.2-orange) 
