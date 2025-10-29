@@ -10,9 +10,6 @@
 
 ---
 
-
----
-
 ## Project description
 This project aims to provide a **hands-on demonstration of the main SQL Injection (SQLi) attack techniques** within web applications.  
 The work was developed **for educational purposes** to understand how the vulnerability operates, its potential impacts, and possible mitigation strategies.  
