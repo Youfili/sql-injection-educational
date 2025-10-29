@@ -1,6 +1,10 @@
-# Progetto di Sicurezza Informatica – SQL Injection (SQLi)  
+# Computer Security Project – SQL Injection (SQLi) 
 
-![Python](https://img.shields.io/badge/Python-3.10-blue) ![Flask](https://img.shields.io/badge/Flask-2.2-orange) ![License](https://img.shields.io/badge/License-MIT-green)  
+![Python](https://img.shields.io/badge/Python-3.10-blue) 
+![Flask](https://img.shields.io/badge/Flask-2.2-orange) 
+![License](https://img.shields.io/badge/License-MIT-green)  
+![Contribute](https://img.shields.io/badge/Contributions-Welcome-brightgreen) 
+![Collaboration](https://img.shields.io/badge/Collaboration-Open-blue)
 
 [Download the project report (PDF)](docs/Sicurezza_Project.pdf)
 
@@ -40,27 +44,60 @@ git clone https://github.com/Youfili/sql-injection-educational.git
 
 ## Project report
 The full PDF report includes:
-- Introduzione teorica alla SQL Injection
-- Tecniche di attacco utilizzate
-- Analisi dei rischi
-- Strategie di mitigazione
-- Esempi di codice
+- Theoretical introduction to SQL Injection
+- Attack techniques used
+- Risk analysis
+- Mitigation strategies
+- Code examples
 
-## Strumenti utilizzati
-- Linguaggio: Python 3.x
-- Framework web: Flask
+## Tools and technologies
+- Language: Python 3.x
+- Web framework: Flask
 - Template engine: Jinja2
 - Database: PostgreSQL
 - Front-end: HTML5, CSS3, Bootstrap 5, JavaScript
-- Gestione sessioni: Flask-Session
-- Sistema operativo di sviluppo: Ubuntu 22.04
+- Session management: Flask-Session
+- Development OS: Ubuntu 22.04
 
-## Note aggiuntive
-- Il progetto è a **scopo didattico**, non per utilizzo in ambienti reali
-- La sicurezza delle password è volutamente compromessa per dimostrare le vulnerabilità SQLi
-- Eventuali miglioramenti futuri possono includere:
-  - Hashing sicuro delle password (bcrypt, Argon2)
-  - Logging avanzato delle query
-  - Filtraggio e validazione più robusta degli input utente
+## Additional notes
+- This project is for educational purposes only and should not be used in production environments.
+- Password security is intentionally weakened to demonstrate SQLi vulnerabilities.
+- Possible future improvements:
+  - Secure password hashing (bcrypt, Argon2)
+  - Advanced query logging and auditing
+  - Stronger input validation and sanitization
+  - Parameterized queries / prepared statements everywhere
+  - Automated tests covering both normal and malicious inputs
     
+---
+
+Contributing
+
+Contributions, suggestions and improvements are very welcome — whether it's code hardening, documentation, tests, or additional attack/defense scenarios. If you want to contribute:
+    1) Fork the repository.
+    2) Create a feature branch: git checkout -b feature/your-feature.
+    3) Commit your changes and open a pull request describing the enhancement/fix.
+Please open issues for bugs, security improvements, or documentation updates. When proposing security fixes, prefer opening a private communication channel if the fix relates to novel vulnerabilities that could be abused before patches are merged.
+
+---
+
+Ethical use & disclaimer
+
+This repository is intended strictly for learning and research. Do not use the techniques demonstrated here against systems for which you do not have explicit authorization. Misuse of the materials in this repository for malicious purposes is strictly prohibited and may be unlawful.
+
+---
+
+Contact & collaboration
+
+If you'd like to collaborate, report improvements, or discuss the project, feel free to:
+    - Open an issue or pull request on GitHub
+    - Send a short message in the repository’s issue tracker
+
+I’m open to collaborations to:
+    - Harden the application (implement secure coding practices)
+    - Expand the report with more mitigations and tests
+    - Add CI pipelines and automated security checks
+
+Thank you for taking a look — contributions and constructive feedback are highly appreciated.
+
 ---
