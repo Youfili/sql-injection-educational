@@ -2,44 +2,44 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10-blue) ![Flask](https://img.shields.io/badge/Flask-2.2-orange) ![License](https://img.shields.io/badge/License-MIT-green)  
 
-[Scarica la relazione del progetto in PDF](docs/Sicurezza_Project.pdf)
+[Download the project report (PDF)](docs/Sicurezza_Project.pdf)
 
 ---
 
-## Descrizione del progetto
-Questo progetto ha come obiettivo la **dimostrazione pratica delle principali tecniche di attacco SQL Injection** (SQLi) all’interno di applicazioni web.  
-L’attività è stata sviluppata **a scopo didattico**, per comprendere il funzionamento della vulnerabilità, i suoi effetti e le possibili strategie di mitigazione.
-Progetto sviluppato per il corso di Sicurezza (Anno Accademico 2025), tenuto dal Prof. Emiliano Casalicchio, nell’ambito del Corso di Laurea in Informatica presso l’Università “La Sapienza” di Roma.
+## Project description
+This project aims to provide a **hands-on demonstration of the main SQL Injection (SQLi) attack techniques** within web applications.  
+The work was developed **for educational purposes** to understand how the vulnerability operates, its potential impacts, and possible mitigation strategies.  
+Project developed for the Security course (Academic Year 2025), taught by Prof. Emiliano Casalicchio, as part of the Computer Science degree at “La Sapienza” University of Rome.
 
-Il progetto simula un’applicazione web con autenticazione utente intenzionalmente vulnerabile, permettendo di testare tre tecniche specifiche di attacco:
-- Tautologia
+The project simulates an intentionally vulnerable web application with user authentication, allowing the testing of three specific attack techniques:
+- Tautology
 - EOL Comment
 - PiggyBack Query
 
-**Nota:** le password nel database sono lasciate in chiaro per motivi didattici. In un contesto reale dovrebbero essere memorizzate in forma hashata con salatura (bcrypt, Argon2).
+**Note:** Passwords in the database are stored in plain text for educational demonstration. In a real environment, passwords must be stored hashed and salted (e.g. bcrypt, Argon2).
 
 ---
 
-## Come eseguire il progetto
+## How to run the project
 
-1. Clona il repository:
+1. Clone the repository:
 ```bash
-git clone https://github.com/tuo-profilo/tuo-repo.git
+git clone https://github.com/Youfili/sql-injection-educational.git
 ```
-2. Installa le dipendenze:
+2. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
    
-3. Avvia l’applicazione:
+3. Start the application:
    ```bash
     python3 src/app.py
    ```
 
 ---
 
-## Relazione del progetto
-La relazione completa in PDF include:
+## Project report
+The full PDF report includes:
 - Introduzione teorica alla SQL Injection
 - Tecniche di attacco utilizzate
 - Analisi dei rischi
