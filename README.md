@@ -3,8 +3,8 @@
 ![Python](https://img.shields.io/badge/Python-3.10-blue) 
 ![Flask](https://img.shields.io/badge/Flask-2.2-orange) 
 ![License](https://img.shields.io/badge/License-MIT-green)  
-![Contribute](https://img.shields.io/badge/Contributions-Welcome-brightgreen) 
-![Collaboration](https://img.shields.io/badge/Collaboration-Open-blue)
+[![Contribute](https://img.shields.io/badge/Contribute-Welcome-brightgreen)](https://github.com/Youfili/sql-injection-educational/pulls) 
+[![Collaboration](https://img.shields.io/badge/Collaboration-Open-blue)](https://github.com/Youfili/sql-injection-educational/issues)
 
 [Download the project report (PDF)](docs/Sicurezza_Project.pdf)
 
